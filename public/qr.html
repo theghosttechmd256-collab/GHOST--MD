@@ -1,0 +1,413 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GHOST-MD | QR Scanner</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  color: #fff;
+  background:
+    radial-gradient(circle at top, #35135c, transparent 50%),
+    #080611;
+}
+
+.card {
+  width: 100%;
+  max-width: 440px;
+  padding: 26px;
+  border: 1px solid #8b45c9;
+  border-radius: 24px;
+  background: rgba(20, 12, 34, 0.96);
+  box-shadow: 0 0 30px #8b45c933;
+}
+
+.logo {
+  width: 85px;
+  height: 85px;
+  display: block;
+  object-fit: contain;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+}
+
+.brand {
+  text-align: center;
+  font-weight: bold;
+  color: #c084fc;
+  letter-spacing: 3px;
+  font-size: 14px;
+}
+
+.version {
+  text-align: center;
+  color: #9275ae;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 26px;
+  margin: 25px 0 10px;
+  background: linear-gradient(90deg, #c084fc, #38bdf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.description {
+  text-align: center;
+  font-size: 14px;
+  color: #c8b7dc;
+  line-height: 1.7;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px;
+  margin: 22px 0;
+  border: 1px solid #382449;
+  border-radius: 12px;
+  background: #0c0815;
+  color: #c9b9dc;
+  font-size: 14px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #a855f7;
+  box-shadow: 0 0 10px #a855f7;
+  flex-shrink: 0;
+}
+
+.dot.online {
+  background: #22c55e;
+  box-shadow: 0 0 10px #22c55e;
+}
+
+.dot.error {
+  background: #ef4444;
+  box-shadow: 0 0 10px #ef4444;
+}
+
+button {
+  width: 100%;
+  border: none;
+  padding: 15px;
+  border-radius: 13px;
+  margin-top: 12px;
+  font-size: 15px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  background: linear-gradient(90deg, #7135d5, #a23ce0);
+  transition: 0.2s;
+}
+
+button:hover {
+  filter: brightness(1.15);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.secondary {
+  background: #21132e;
+  border: 1px solid #68418b;
+}
+
+.qr-box {
+  display: none;
+  margin-top: 22px;
+  padding: 18px;
+  border-radius: 17px;
+  background: #fff;
+  text-align: center;
+}
+
+#qrCanvas {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.qr-box p {
+  margin: 12px 0 0;
+  color: #333;
+  font-size: 13px;
+}
+
+.instructions {
+  margin-top: 22px;
+  padding: 16px;
+  border-radius: 14px;
+  background: #0c0815;
+  border: 1px solid #382449;
+}
+
+.instructions h3 {
+  color: #c084fc;
+  font-size: 15px;
+  margin-top: 0;
+}
+
+.instructions ol {
+  padding-left: 20px;
+  color: #c9b9dc;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+#message {
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-top: 16px;
+  word-break: break-word;
+}
+
+nav {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #382449;
+}
+
+nav a {
+  color: #c084fc;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.footer {
+  text-align: center;
+  color: #8f7ca8;
+  font-size: 12px;
+  margin-top: 24px;
+}
+
+@media (max-width: 380px) {
+  .card {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 23px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <img
+    class="logo"
+    src="/assets/ghost-md-poster.png"
+    alt="GHOST-MD logo"
+    onerror="this.style.display='none'"
+  >
+
+  <div class="brand">𓆩 GHOST-MD 𓆪</div>
+  <div class="version">WHATSAPP AUTOMATION • V2.5.0</div>
+
+  <h1>QR Connection</h1>
+
+  <p class="description">
+    Connect your WhatsApp account by scanning the QR code
+    using Linked Devices.
+  </p>
+
+  <div class="status">
+    <span id="dot" class="dot"></span>
+    <span id="statusText">Ready to start connection</span>
+  </div>
+
+  <button id="startBtn">⚡ Start WhatsApp Connection</button>
+
+  <button id="qrBtn" class="secondary" disabled>
+    ◈ Generate / Refresh QR
+  </button>
+
+  <div class="qr-box" id="qrBox">
+    <div id="qrCanvas"></div>
+    <p>Scan this code using WhatsApp Linked Devices</p>
+  </div>
+
+  <div id="message"></div>
+
+  <div class="instructions">
+    <h3>How to connect</h3>
+    <ol>
+      <li>Press Start WhatsApp Connection.</li>
+      <li>Press Generate / Refresh QR.</li>
+      <li>Open WhatsApp on your phone.</li>
+      <li>Go to Linked Devices.</li>
+      <li>Choose Link a Device.</li>
+      <li>Scan the QR shown above.</li>
+    </ol>
+  </div>
+
+  <nav>
+    <a href="/index.html">Home</a>
+    <a href="/pair.html">Pair Code</a>
+  </nav>
+
+  <div class="footer">
+    GHOST-MD • SITANI THE HACKER
+  </div>
+
+</div>
+
+<!-- QR rendering library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+const $ = id => document.getElementById(id);
+
+let started = false;
+
+function setStatus(text, type = "normal") {
+  $("statusText").textContent = text;
+
+  $("dot").className = "dot";
+
+  if (type === "online") {
+    $("dot").classList.add("online");
+  }
+
+  if (type === "error") {
+    $("dot").classList.add("error");
+  }
+}
+
+function showMessage(text, color = "#c9b9dc") {
+  $("message").textContent = text;
+  $("message").style.color = color;
+}
+
+async function requestJSON(url, method = "GET") {
+  const response = await fetch(url, {
+    method,
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(data.error || data.message || "Server request failed.");
+  }
+
+  return data;
+}
+
+$("startBtn").addEventListener("click", async () => {
+  $("startBtn").disabled = true;
+  setStatus("Starting WhatsApp connection...");
+  showMessage("Connecting to the server. Please wait...");
+
+  try {
+    const data = await requestJSON("/api/start", "POST");
+
+    started = true;
+    $("qrBtn").disabled = false;
+
+    setStatus(data.message || "Connection started");
+    showMessage(
+      data.message || "Connection started. Now request your QR code.",
+      "#86efac"
+    );
+
+  } catch (error) {
+    setStatus("Could not start connection", "error");
+    showMessage(error.message, "#fca5a5");
+  } finally {
+    $("startBtn").disabled = false;
+  }
+});
+
+$("qrBtn").addEventListener("click", async () => {
+  if (!started) {
+    showMessage("Start the connection first.", "#fca5a5");
+    return;
+  }
+
+  $("qrBtn").disabled = true;
+  $("qrBox").style.display = "none";
+  $("qrCanvas").innerHTML = "";
+
+  setStatus("Requesting QR code...");
+  showMessage("Please wait while the QR code is generated...");
+
+  try {
+    const data = await requestJSON("/api/qr");
+
+    if (!data.qr) {
+      throw new Error(
+        data.message || "QR code is not ready yet. Try again shortly."
+      );
+    }
+
+    if (data.qr.startsWith("data:image/")) {
+      const img = document.createElement("img");
+      img.src = data.qr;
+      img.alt = "WhatsApp QR code";
+      img.style.maxWidth = "100%";
+      $("qrCanvas").appendChild(img);
+    } else {
+      if (typeof QRCode === "undefined") {
+        throw new Error("QR rendering library failed to load.");
+      }
+
+      new QRCode($("qrCanvas"), {
+        text: data.qr,
+        width: 240,
+        height: 240,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    }
+
+    $("qrBox").style.display = "block";
+
+    setStatus("QR code ready to scan");
+    showMessage(
+      "Open WhatsApp → Linked Devices → Link a Device.",
+      "#86efac"
+    );
+
+  } catch (error) {
+    setStatus("QR generation failed", "error");
+    showMessage(error.message, "#fca5a5");
+  } finally {
+    $("qrBtn").disabled = false;
+  }
+});
+</script>
+
+</body>
+</html>
