@@ -1,0 +1,314 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GHOST-MD • Pairing</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, #261044, #090611);
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.card {
+  width: 100%;
+  max-width: 460px;
+  padding: 28px;
+  background: #150d23;
+  border: 1px solid #7843b8;
+  border-radius: 25px;
+  box-shadow: 0 0 35px #0008;
+}
+
+.logo {
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, #7c3aed, #c084fc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  font-weight: bold;
+}
+
+.brand {
+  text-align: center;
+  color: #c084fc;
+  font-weight: bold;
+  letter-spacing: 3px;
+  font-size: 14px;
+}
+
+h1 {
+  text-align: center;
+  font-size: 27px;
+  margin: 20px 0;
+  background: linear-gradient(90deg, #a855f7, #38bdf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+p {
+  color: #c9b9dc;
+  line-height: 1.7;
+}
+
+label {
+  display: block;
+  margin: 22px 0 9px;
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 17px;
+  border: 1px solid #624080;
+  border-radius: 14px;
+  background: #0c0815;
+  color: white;
+  font-size: 17px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #c084fc;
+  box-shadow: 0 0 10px #9333ea55;
+}
+
+button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 17px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #7135d5, #9b35df);
+  color: white;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+#message {
+  margin-top: 18px;
+  text-align: center;
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+#result {
+  display: none;
+  margin-top: 18px;
+  padding: 20px;
+  border: 1px dashed #a855f7;
+  border-radius: 14px;
+  text-align: center;
+}
+
+#code {
+  font-size: 27px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  color: #c084fc;
+  margin: 15px 0;
+  word-break: break-all;
+}
+
+.links {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #382447;
+}
+
+a {
+  color: #c084fc;
+  text-decoration: none;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 25px;
+  color: #8f7ca8;
+  font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="logo">S</div>
+
+  <div class="brand">SITANI THE HACKER</div>
+
+  <h1>Pair Code Generator</h1>
+
+  <p>
+    Enter your WhatsApp number using your international
+    country code. Numbers from all countries are supported.
+    You can enter +, spaces, or hyphens.
+  </p>
+
+  <label for="phone">WhatsApp number</label>
+
+  <input
+    id="phone"
+    type="tel"
+    inputmode="tel"
+    autocomplete="tel"
+    placeholder="+256 7XX XXX XXX"
+  >
+
+  <button id="generate" type="button">
+    Generate Pairing Code
+  </button>
+
+  <div id="message"></div>
+
+  <div id="result">
+    <div>Your pairing code</div>
+
+    <div id="code"></div>
+
+    <button id="copy" type="button">Copy code</button>
+  </div>
+
+  <div class="links">
+    <a href="/">Home</a>
+    <a href="/qr.html">QR Scan</a>
+  </div>
+
+  <div class="footer">
+    GHOST-MD WhatsApp Automation
+  </div>
+
+</div>
+
+<script>
+const phoneInput = document.getElementById("phone");
+const generateBtn = document.getElementById("generate");
+const message = document.getElementById("message");
+const result = document.getElementById("result");
+const codeDisplay = document.getElementById("code");
+const copyBtn = document.getElementById("copy");
+
+function showMessage(text, color = "#c9b9dc") {
+  message.textContent = text;
+  message.style.color = color;
+}
+
+async function generateCode() {
+  // Accept international numbers from all countries.
+  // Remove spaces, +, parentheses, and hyphens.
+  const phone = phoneInput.value.replace(/\D/g, "");
+
+  result.style.display = "none";
+  codeDisplay.textContent = "";
+
+  if (phone.length < 8 || phone.length > 15) {
+    showMessage(
+      "Enter a valid international phone number including your country code.",
+      "#fca5a5"
+    );
+    return;
+  }
+
+  generateBtn.disabled = true;
+  generateBtn.textContent = "Requesting code...";
+  showMessage("Connecting to the pairing server. Please wait...");
+
+  try {
+    const response = await fetch("/api/pair", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ phone })
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || data.message ||
+        "Server could not generate the pairing code."
+      );
+    }
+
+    const pairingCode = data.code || data.pairingCode;
+
+    if (!pairingCode) {
+      throw new Error(
+        data.message || "The server did not return a pairing code. Check your backend."
+      );
+    }
+
+    codeDisplay.textContent = pairingCode;
+    result.style.display = "block";
+
+    showMessage(
+      data.message || "Pairing code received! Open WhatsApp Linked Devices.",
+      "#86efac"
+    );
+
+  } catch (error) {
+    showMessage(
+      error.message || "Cannot connect to server. Please try again.",
+      "#fca5a5"
+    );
+  } finally {
+    generateBtn.disabled = false;
+    generateBtn.textContent = "Generate Pairing Code";
+  }
+}
+
+generateBtn.addEventListener("click", generateCode);
+
+phoneInput.addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+    generateCode();
+  }
+});
+
+copyBtn.addEventListener("click", async function() {
+  const code = codeDisplay.textContent;
+
+  if (!code) return;
+
+  try {
+    await navigator.clipboard.writeText(code);
+    showMessage("Pairing code copied!", "#86efac");
+  } catch (error) {
+    showMessage(
+      "Copy your code manually: " + code,
+      "#c084fc"
+    );
+  }
+});
+</script>
+
+</body>
+</html>
