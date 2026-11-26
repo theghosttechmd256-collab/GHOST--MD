@@ -1,0 +1,292 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SITANI THE HACKER | Pair Code</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(145deg, #090510, #1b0d31, #10071c);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.card {
+  width: 100%;
+  max-width: 460px;
+  background: #180c27;
+  border: 1px solid #7139a8;
+  border-radius: 24px;
+  padding: 28px 22px;
+  box-shadow: 0 0 35px #7028d822;
+}
+
+.logo {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7028d8, #c084fc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+}
+
+.tag {
+  text-align: center;
+  color: #d8b4fe;
+  font-weight: bold;
+  letter-spacing: 2px;
+  font-size: 12px;
+  margin-bottom: 18px;
+}
+
+h1 {
+  color: #c084fc;
+  font-size: 27px;
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.subtitle {
+  color: #c4b5d8;
+  line-height: 1.7;
+  font-size: 15px;
+  margin-bottom: 24px;
+}
+
+label {
+  display: block;
+  margin-bottom: 9px;
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid #63427e;
+  background: #10071c;
+  color: white;
+  font-size: 17px;
+  margin-bottom: 18px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #c084fc;
+}
+
+button, .link {
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+button {
+  color: white;
+  background: linear-gradient(90deg, #7028d8, #9333ea);
+}
+
+button:disabled {
+  opacity: .65;
+  cursor: wait;
+}
+
+.result {
+  display: none;
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px dashed #c084fc;
+  border-radius: 14px;
+  text-align: center;
+  background: #10071c;
+}
+
+.code {
+  color: #d8b4fe;
+  font-size: 28px;
+  font-weight: bold;
+  letter-spacing: 4px;
+  padding: 16px 0;
+  overflow-wrap: anywhere;
+}
+
+.copy {
+  background: #32194b;
+  border: 1px solid #a855f7;
+  margin-top: 10px;
+}
+
+.error {
+  color: #fca5a5;
+  text-align: center;
+  margin-top: 16px;
+  line-height: 1.5;
+  display: none;
+}
+
+.links {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #38234d;
+}
+
+.link {
+  color: #d8b4fe;
+  background: #241333;
+  border: 1px solid #553372;
+  font-size: 14px;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 22px;
+  color: #9582aa;
+  font-size: 12px;
+  line-height: 1.7;
+}
+</style>
+</head>
+
+<body>
+<main class="card">
+
+  <div class="logo">👻</div>
+
+  <div class="tag">SITANI TECH MD • V2.5.0</div>
+
+  <h1>Pair Code Website</h1>
+
+  <p class="subtitle">
+    Enter your own WhatsApp number in international format,
+    using country code and digits only.
+    Only link accounts you own or are authorized to manage.
+  </p>
+
+  <label for="number">WhatsApp Number</label>
+
+  <input
+    id="number"
+    type="tel"
+    inputmode="numeric"
+    autocomplete="tel"
+    placeholder="2567XXXXXXXX"
+  >
+
+  <button id="submitBtn" type="button" onclick="getPairCode()">
+    Generate Pairing Code
+  </button>
+
+  <div id="errorMsg" class="error"></div>
+
+  <div id="resultBox" class="result">
+    <div>YOUR PAIRING CODE</div>
+    <div id="pairCode" class="code"></div>
+    <button class="copy" type="button" onclick="copyCode()">
+      Copy Code
+    </button>
+  </div>
+
+  <div class="links">
+    <a class="link" href="/">Home</a>
+    <a class="link" href="/qr.html">QR Scan</a>
+  </div>
+
+  <div class="footer">
+    Powered by <strong>SITANI THE HACKER</strong><br>
+    GHOST-MD WhatsApp Automation
+  </div>
+
+</main>
+
+<script>
+async function getPairCode() {
+  const raw = document.getElementById("number").value.trim();
+  const number = raw.replace(/\D/g, "");
+
+  const btn = document.getElementById("submitBtn");
+  const error = document.getElementById("errorMsg");
+  const result = document.getElementById("resultBox");
+  const codeElement = document.getElementById("pairCode");
+
+  error.style.display = "none";
+  result.style.display = "none";
+
+  if (number.length < 8 || number.length > 15) {
+    error.textContent =
+      "Enter a valid number with country code, digits only.";
+    error.style.display = "block";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Requesting code...";
+
+  try {
+    const response = await fetch("/api/pair", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ phone: number })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || data.message || "Pairing request failed.");
+    }
+
+    if (!data.code) {
+      throw new Error(data.message || "No pairing code returned.");
+    }
+
+    codeElement.textContent = data.code;
+    result.style.display = "block";
+
+  } catch (err) {
+    error.textContent = err.message || "Server error. Please try again.";
+    error.style.display = "block";
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Generate Pairing Code";
+  }
+}
+
+async function copyCode() {
+  const code = document.getElementById("pairCode").textContent;
+
+  try {
+    await navigator.clipboard.writeText(code);
+    alert("Pairing code copied!");
+  } catch {
+    alert("Please select and copy the code manually: " + code);
+  }
+}
+</script>
+</body>
+</html>
