@@ -1,0 +1,386 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10071c">
+  <title>SITANI THE HACKER | Pair Code</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: #090510;
+      color: #f8f5ff;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .banner {
+      text-align: center;
+      padding: 30px 18px;
+      margin-bottom: 18px;
+      border: 1px solid #54218a;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at top, #48128a 0%, transparent 65%),
+        linear-gradient(145deg, #170a27, #0b0612);
+      box-shadow: 0 0 35px rgba(139, 42, 255, .15);
+    }
+
+    .mascot {
+      font-size: 64px;
+      filter: drop-shadow(0 0 15px #a855f7);
+      margin-bottom: 12px;
+    }
+
+    .brand {
+      font-size: clamp(26px, 7vw, 38px);
+      font-weight: 900;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, #ffffff, #d8a5ff, #a020f0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tagline {
+      color: #c7a5e9;
+      font-size: 12px;
+      letter-spacing: 3px;
+      margin-top: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 7px 13px;
+      border: 1px solid #7c2cbb;
+      border-radius: 999px;
+      color: #e7c7ff;
+      background: rgba(126, 34, 206, .15);
+      font-size: 12px;
+    }
+
+    .card {
+      background: linear-gradient(160deg, #1b1028, #100817);
+      border: 1px solid #64249a;
+      border-radius: 24px;
+      padding: 25px 21px;
+      box-shadow: 0 15px 45px rgba(0, 0, 0, .5);
+    }
+
+    .card h2 {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .intro {
+      text-align: center;
+      color: #c5b5d4;
+      line-height: 1.7;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 9px;
+      font-weight: 700;
+      font-size: 14px;
+      color: #e8d5ff;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px;
+      border: 1px solid #63308c;
+      border-radius: 14px;
+      background: #090510;
+      color: white;
+      font-size: 16px;
+      outline: none;
+      margin-bottom: 16px;
+    }
+
+    input:focus {
+      border-color: #c084fc;
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, .15);
+    }
+
+    .generate {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(90deg, #7e22ce, #a020f0);
+      color: white;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 7px 25px rgba(147, 51, 234, .25);
+    }
+
+    .generate:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .message {
+      display: none;
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .error {
+      background: #3a101c;
+      color: #ffb4c2;
+      border: 1px solid #8c2945;
+    }
+
+    .success {
+      background: #211035;
+      border: 1px solid #913bd4;
+      color: #e9d5ff;
+    }
+
+    .result {
+      display: none;
+      margin-top: 20px;
+      padding: 18px;
+      border: 1px dashed #b45cff;
+      border-radius: 16px;
+      text-align: center;
+      background: #0b0613;
+    }
+
+    .result-title {
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: #cba5f5;
+    }
+
+    .pair-code {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      margin: 15px 0;
+      color: #d9a6ff;
+      overflow-wrap: anywhere;
+      user-select: all;
+    }
+
+    .copy {
+      padding: 10px 18px;
+      border: 1px solid #9b4ddd;
+      border-radius: 10px;
+      color: #e6c8ff;
+      background: #29113d;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .instructions {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #bda8d0;
+      line-height: 1.7;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 22px;
+      color: #a88abb;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .footer strong {
+      color: #d8a5ff;
+    }
+
+    .footer a {
+      color: #c084fc;
+      text-decoration: none;
+      margin: 0 8px;
+    }
+
+    @media (max-width: 380px) {
+      body {
+        padding: 12px;
+      }
+
+      .card {
+        padding: 20px 16px;
+      }
+
+      .pair-code {
+        font-size: 23px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+
+    <header class="banner">
+      <div class="mascot">👻</div>
+      <h1 class="brand">SITANI THE HACKER</h1>
+      <p class="tagline">INNOVATION • SECURITY • SUPPORT</p>
+      <div class="badge">⚡ GHOST-MD V2.5.0</div>
+    </header>
+
+    <section class="card">
+      <h2>💜 Pair Code Generator</h2>
+
+      <p class="intro">
+        Welcome! Generate a WhatsApp pairing code for an account
+        you own or are authorized to manage.
+        Enter your number using your country code.
+      </p>
+
+      <label for="number">WhatsApp Number</label>
+
+      <input
+        type="tel"
+        id="number"
+        placeholder="2567XXXXXXXX"
+        inputmode="numeric"
+        autocomplete="tel"
+        maxlength="15"
+      >
+
+      <button class="generate" id="submitBtn" onclick="getPairCode()">
+        ⚡ Generate Pair Code
+      </button>
+
+      <div id="errorMsg" class="message error"></div>
+      <div id="successMsg" class="message success"></div>
+
+      <div id="resultBox" class="result">
+        <div class="result-title">YOUR PAIRING CODE</div>
+
+        <div id="pairCode" class="pair-code">--------</div>
+
+        <button class="copy" onclick="copyCode()">
+          📋 Copy Pair Code
+        </button>
+
+        <p class="instructions">
+          Open WhatsApp → Linked devices →
+          Link with phone number → Enter the code above.
+        </p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <strong>👑 SITANI THE HACKER</strong><br>
+      Simple • Fast • Made with 💜
+
+      <div style="margin-top:12px">
+        <a href="/">Home</a>
+        <a href="/qr">QR Scan</a>
+      </div>
+
+      <p style="margin-top:12px">
+        Keep your pairing codes and linked-device access private.
+      </p>
+    </footer>
+
+  </main>
+
+  <script>
+    async function getPairCode() {
+      const raw = document.getElementById("number").value.trim();
+      const number = raw.replace(/\D/g, "");
+
+      const btn = document.getElementById("submitBtn");
+      const errorMsg = document.getElementById("errorMsg");
+      const successMsg = document.getElementById("successMsg");
+      const resultBox = document.getElementById("resultBox");
+      const pairCodeEl = document.getElementById("pairCode");
+
+      errorMsg.style.display = "none";
+      successMsg.style.display = "none";
+      resultBox.style.display = "none";
+
+      if (number.length < 8 || number.length > 15) {
+        errorMsg.textContent =
+          "Enter a valid phone number with country code, digits only.";
+        errorMsg.style.display = "block";
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "⏳ Generating code...";
+
+      try {
+        const res = await fetch("/api/pair", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            phone: number
+          })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || data.message || "Pairing failed.");
+        }
+
+        if (data.code) {
+          pairCodeEl.textContent = data.code;
+          resultBox.style.display = "block";
+          successMsg.textContent =
+            data.message || "Pairing code generated successfully.";
+          successMsg.style.display = "block";
+        } else {
+          throw new Error("Pairing code was not returned by the server.");
+        }
+
+      } catch (err) {
+        errorMsg.textContent =
+          err.message || "Server error. Please try again.";
+        errorMsg.style.display = "block";
+
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "⚡ Generate Pair Code";
+      }
+    }
+
+    async function copyCode() {
+      const code = document.getElementById("pairCode").textContent;
+
+      try {
+        await navigator.clipboard.writeText(code);
+        alert("Pairing code copied!");
+      } catch (err) {
+        alert("Please select and copy the pairing code manually: " + code);
+      }
+    }
+  </script>
+</body>
+</html>
